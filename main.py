@@ -1,3 +1,6 @@
+import json
+import re
+
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.button import Button
@@ -13,6 +16,7 @@ else:
     from serial.tools import list_ports
     from serial import Serial, SerialException
 
+ser_data = dict()
 
 class DroneDetector(MDApp):
     def __init__(self, *args, **kwargs):
@@ -103,17 +107,21 @@ class DroneDetector(MDApp):
             )
             self.uiDict['txtInput_write'].text = ''
 
+
     def read_msg_thread(self):
         while True:
             try:
                 with self.port_thread_lock:
                     if not self.serial_port.is_open:
                         break
-                    received_msg = self.serial_port.read(
-                        self.serial_port.in_waiting
-                    )
+                    received_msg = self.serial_port.read(self.serial_port.in_waiting)
                 if received_msg:
                     msg = received_msg.decode('utf8')
+                    ser_regul = re.findall(r'(\{.*\})', msg)
+                    if len(ser_regul) > 0:
+                        ser_to_json = json.loads(ser_regul[0].lstrip("'").rstrip("'"))
+                        ser_data.update(ser_to_json)
+                        print(ser_data)
                     self.display_received_msg(msg)
             except Exception as ex:
                 raise ex
