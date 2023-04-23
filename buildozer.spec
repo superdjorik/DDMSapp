@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = DDMSDapp
+title = DroneDetector
 
 # (str) Package name
-package.name = ddmsdapp
+package.name = drone detector app
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = ru.slntsk
@@ -37,7 +37,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy
+requirements = python3,kivy, kivymd
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes

@@ -1,12 +1,10 @@
-from kivy.app import App
+from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.clock import mainthread
 from kivy.utils import platform
 import threading
 import sys
-
-from serial_configs import baudrate, bit, parity, stop
 
 if platform == 'android':
     from usb4a import usb
@@ -15,81 +13,20 @@ else:
     from serial.tools import list_ports
     from serial import Serial, SerialException
 
-kv = '''
-BoxLayout:
-    id: box_root
-    orientation: 'vertical'
 
-    Label:
-        size_hint_y: None
-        height: '50dp'
-        text: 'terminal app'
-
-    ScreenManager:
-        id: sm
-        on_parent: app.uiDict['sm'] = self
-
-        Screen:
-            name: 'screen_scan'
-            BoxLayout:
-                orientation: 'vertical'
-                ScrollView:
-                    BoxLayout:
-                        id: box_list
-                        orientation: 'vertical'
-                        on_parent: app.uiDict['box_list'] = self
-                        size_hint_y: None
-                        height: max(self.minimum_height, self.parent.height)
-                Button:
-                    id: btn_scan
-                    on_parent: app.uiDict['btn_scan'] = self
-                    size_hint_y: None
-                    height: '50dp'
-                    text: 'Scan USB Device'
-                    on_release: app.on_btn_scan_release()
-
-        Screen:
-            name: 'screen_test'
-            BoxLayout:
-                orientation: 'vertical'
-                ScrollView:
-                    size_hint_y: None
-                    height: '50dp'
-                    TextInput:
-                        id: txtInput_write
-                        on_parent: app.uiDict['txtInput_write'] = self
-                        size_hint_y: None
-                        height: max(self.minimum_height, self.parent.height)
-                        text: ''
-                Button:
-                    id: btn_write
-                    on_parent: app.uiDict['btn_write'] = self
-                    size_hint_y: None
-                    height: '50dp'
-                    text: 'Write'
-                    on_release: app.on_btn_write_release()
-                ScrollView:
-                    TextInput:
-                        id: txtInput_read
-                        on_parent: app.uiDict['txtInput_read'] = self
-                        size_hint_y: None
-                        height: max(self.minimum_height, self.parent.height)
-                        readonly: True
-                        text: ''
-'''
-
-
-class MainApp(App):
+class DroneDetector(MDApp):
     def __init__(self, *args, **kwargs):
         self.uiDict = {}
         self.device_name_list = []
         self.serial_port = None
         self.read_thread = None
         self.port_thread_lock = threading.Lock()
-        super(MainApp, self).__init__(*args, **kwargs)
+        super(DroneDetector, self).__init__(**kwargs)
 
     def build(self):
-        return Builder.load_string(kv)
+        self.theme_cls.material_style = "M3"
+        self.theme_cls.theme_style = "Dark"
+        return Builder.load_file('dronedetector.kv')
 
     def on_stop(self):
         if self.serial_port:
@@ -129,19 +66,19 @@ class MainApp(App):
                 return
             self.serial_port = serial4a.get_serial_port(
                 device_name,
-                baudrate,
-                bit,
-                parity,
-                stop,
+                115200,
+                8,
+                'N',
+                1,
                 timeout=1
             )
         else:
             self.serial_port = Serial(
                 device_name,
-                baudrate,
-                bit,
-                parity,
-                stop,
+                115200,
+                8,
+                'N',
+                1,
                 timeout=1
             )
 
@@ -149,7 +86,7 @@ class MainApp(App):
             self.read_thread = threading.Thread(target=self.read_msg_thread)
             self.read_thread.start()
 
-        self.uiDict['sm'].current = 'screen_test'
+        self.uiDict['sm'].current = 'screen_main'
 
     def on_btn_write_release(self):
         if self.serial_port and self.serial_port.is_open:
@@ -176,8 +113,7 @@ class MainApp(App):
                         self.serial_port.in_waiting
                     )
                 if received_msg:
-                    recieved_data = received_msg
-                    msg = recieved_data.decode('utf8')
+                    msg = received_msg.decode('utf8')
                     self.display_received_msg(msg)
             except Exception as ex:
                 raise ex
@@ -188,4 +124,4 @@ class MainApp(App):
 
 
 if __name__ == '__main__':
-    MainApp().run()
+    DroneDetector().run()
