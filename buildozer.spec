@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = DroneDetector
+title = Drone Detector
 
 # (str) Package name
-package.name = DroneDetectorApp
+package.name = dronedetector
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = ru.slntsk
@@ -104,10 +104,10 @@ fullscreen = 0
 #android.api = 31
 
 # (int) Minimum API your APK / AAB will support.
-#android.minapi = 21
+android.minapi = 28
 
 # (int) Android SDK version to use
-#android.sdk = 20
+android.sdk = 31
 
 # (str) Android NDK version to use
 #android.ndk = 23b
@@ -236,7 +236,7 @@ fullscreen = 0
 #android.ouya.icon.filename = %(source.dir)s/data/ouya_icon.png
 
 # (str) XML file to include as an intent filters in <activity> tag
-android.manifest.intent_filters = intent-filter.xml
+#android.manifest.intent_filters = intent-filter.xml
 
 # (list) Copy these files to src/main/res/xml/ (used for example with intent-filters)
 #android.res_xml = PATH_TO_FILE,
@@ -283,7 +283,8 @@ android.manifest.intent_filters = intent-filter.xml
 
 # (list) The Android archs to build for, choices: armeabi-v7a, arm64-v8a, x86, x86_64
 # In past, was `android.arch` as we weren't supporting builds for multiple archs at the same time.
-android.archs = arm64-v8a, armeabi-v7a
+android.archs = arm64-v8a
+#, armeabi-v7a
 
 # (int) overrides automatic versionCode computation (used in build.gradle)
 # this is not the same as app version and should only be edited if you know what you're doing
