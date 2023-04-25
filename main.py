@@ -1,6 +1,6 @@
 import json
 import re
-
+from kivy.logger import LoggerHistory
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.button import Button
@@ -30,6 +30,7 @@ class DroneDetector(MDApp):
     def build(self):
         self.theme_cls.material_style = "M3"
         self.theme_cls.theme_style = "Dark"
+        print(LoggerHistory.history)
         return Builder.load_file('dronedetector.kv')
 
     def on_stop(self):
