@@ -10,8 +10,8 @@ import threading
 import sys
 
 if platform == 'android':
-    from android.permissions import request_permissions, Permission
-    request_permissions([Permission.SERIAL])
+    # from android.permissions import request_permissions, Permission
+    # request_permissions([Permission.SERIAL])
     from usb4a import usb
     from usbserial4a import serial4a
 else:
