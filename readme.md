@@ -13,11 +13,16 @@ kv syntax highliting in pycharm (File - Manage IDE - Import):
 
 https://github.com/noembryo/KV4Jetbrains
 
-Android manifest at dir:
-\\wsl.localhost\Ubuntu-20.04\home\user\DDMSapp\.buildozer\android\platform\build-arm64-v8a\dists\dronedetector\templates
-add 
+[//]: # (Android manifest at dir:)
 
-```
-<uses-feature android:name="android.hardware.usb.host" />
-```
+[//]: # (\\wsl.localhost\Ubuntu-20.04\home\user\DDMSapp\.buildozer\android\platform\build-arm64-v8a\dists\dronedetector\templates)
+
+[//]: # (add )
+
+[//]: # ()
+[//]: # (```)
+
+[//]: # (<uses-feature android:name="android.hardware.usb.host" />)
+
+[//]: # (```)
 
