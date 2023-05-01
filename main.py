@@ -32,7 +32,7 @@ class DroneDetector(MDApp):
     def build(self):
         self.theme_cls.material_style = "M3"
         self.theme_cls.theme_style = "Dark"
-        print(LoggerHistory.history)
+        # print(LoggerHistory.history)
         return Builder.load_file('dronedetector.kv')
 
     def on_stop(self):
@@ -124,7 +124,7 @@ class DroneDetector(MDApp):
                     if len(ser_regul) > 0:
                         ser_to_json = json.loads(ser_regul[0].lstrip("'").rstrip("'"))
                         ser_data.update(ser_to_json)
-                        print(ser_data)
+                        # print(ser_data)
                     self.display_received_msg(msg)
             except Exception as ex:
                 raise ex
