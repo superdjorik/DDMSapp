@@ -9,7 +9,7 @@ OR use python <=3.10 instead of 3.11
 
 
 
-kv syntax highliting in pycharm (File - Manage IDE - Import): 
+kv syntax highliting in pycharm for Windows (File - Manage IDE - Import): 
 
 https://github.com/noembryo/KV4Jetbrains
 
