@@ -10,8 +10,6 @@ import threading
 import sys
 
 if platform == 'android':
-    # from android.permissions import request_permissions, Permission
-    # request_permissions([Permission.SERIAL])
     from usb4a import usb
     from usbserial4a import serial4a
 else:
@@ -24,6 +22,7 @@ class DroneDetector(MDApp):
     def __init__(self, *args, **kwargs):
         self.uiDict = {}
         self.device_name_list = []
+        # self.uiDict['batt_level'] = 'Батарейка'
         self.serial_port = None
         self.read_thread = None
         self.port_thread_lock = threading.Lock()
@@ -120,18 +119,34 @@ class DroneDetector(MDApp):
                     received_msg = self.serial_port.read(self.serial_port.in_waiting)
                 if received_msg:
                     msg = received_msg.decode('utf8')
-                    ser_regul = re.findall(r'(\{.*\})', msg)
-                    if len(ser_regul) > 0:
-                        ser_to_json = json.loads(ser_regul[0].lstrip("'").rstrip("'"))
-                        ser_data.update(ser_to_json)
-                        # print(ser_data)
                     self.display_received_msg(msg)
             except Exception as ex:
                 raise ex
 
     @mainthread
+    def update_batt_level(self, lvl):
+        self.uiDict['batt_level'].text = lvl
+
+    @mainthread
+    def update_wifi_channels(self, wifi_lvl):
+        self.uiDict['wifi_level'].text = wifi_lvl
+
+    @mainthread
     def display_received_msg(self, msg):
         self.uiDict['txtInput_read'].text += msg
+        lastline = self.uiDict['txtInput_read'].text.splitlines()[-1]
+        print(f'line {lastline}')
+        wifi_found = re.findall(r'(\{.*\})', lastline)
+        batt_level = re.findall(r'(?<=Battery Voltage = )\d\.\d\d', lastline)
+        if len(wifi_found) > 0:
+            self.update_wifi_channels(wifi_found[0])
+            # ser_to_json = json.loads(ser_regul[0].lstrip("'").rstrip("'"))
+            # ser_data.update(ser_to_json)
+            print(f'found: {wifi_found[0]}')
+        if len(batt_level) > 0:
+            self.update_batt_level(batt_level[0])
+            # print(f'found {batt_level[0]}')
+            # self.update_batt_level(batt_level[0])
 
 
 if __name__ == '__main__':
