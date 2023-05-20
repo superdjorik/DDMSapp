@@ -134,17 +134,17 @@ class DroneDetector(MDApp):
     @mainthread
     def display_received_msg(self, msg):
         self.uiDict['txtInput_read'].text += msg
-        lastline = self.uiDict['txtInput_read'].text.splitlines()[-1]
-        print(f'line {lastline}')
+        lastline = self.uiDict['txtInput_read'].text.split('\r\n')[-1]
+        # print(f'line {lastline}')
         wifi_found = re.findall(r'(\{.*\})', lastline)
         batt_level = re.findall(r'(?<=Battery Voltage = )\d\.\d\d', lastline)
         if len(wifi_found) > 0:
-            self.update_wifi_channels(wifi_found[0])
+            self.update_wifi_channels(wifi_found[-1])
             # ser_to_json = json.loads(ser_regul[0].lstrip("'").rstrip("'"))
             # ser_data.update(ser_to_json)
-            print(f'found: {wifi_found[0]}')
+            print(f'found: {wifi_found[-1]}')
         if len(batt_level) > 0:
-            self.update_batt_level(batt_level[0])
+            self.update_batt_level(batt_level[-1])
             # print(f'found {batt_level[0]}')
             # self.update_batt_level(batt_level[0])
 
