@@ -1,13 +1,19 @@
 import json
 import re
 from kivy.logger import LoggerHistory
+from kivy.properties import ObjectProperty
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.button import Button
+from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import mainthread
 from kivy.utils import platform
 import threading
 import sys
+from kivy.garden.graph import Graph, MeshLinePlot
+from math import sin
 
 if platform == 'android':
     from usb4a import usb
@@ -16,13 +22,11 @@ else:
     from serial.tools import list_ports
     from serial import Serial, SerialException
 
-ser_data = dict()
 
 class DroneDetector(MDApp):
     def __init__(self, *args, **kwargs):
         self.uiDict = {}
         self.device_name_list = []
-        # self.uiDict['batt_level'] = 'Батарейка'
         self.serial_port = None
         self.read_thread = None
         self.port_thread_lock = threading.Lock()
@@ -31,8 +35,20 @@ class DroneDetector(MDApp):
     def build(self):
         self.theme_cls.material_style = "M3"
         self.theme_cls.theme_style = "Dark"
-        # print(LoggerHistory.history)
         return Builder.load_file('dronedetector.kv')
+
+    @mainthread
+    def update_chart(self):
+        self.uiDict['chart'].clear_widgets()
+        self.uiDict['btn_chart'].clear_widgets()
+        self.graph = Graph(xlabel='X', ylabel='Y', x_ticks_minor=5,
+                      x_ticks_major=25, y_ticks_major=1,
+                      y_grid_label=True, x_grid_label=True, padding=5,
+                      x_grid=True, y_grid=True, xmin=-0, xmax=100, ymin=-1, ymax=1)
+        self.plot = MeshLinePlot(color=[1, 0, 0, 1])
+        self.plot.points = [(x, sin(x / 10.)) for x in range(0, 101)]
+        self.graph.add_plot(self.plot)
+        self.uiDict['chart'].add_widget(self.graph)
 
     def on_stop(self):
         if self.serial_port:
@@ -94,6 +110,8 @@ class DroneDetector(MDApp):
 
         self.uiDict['sm'].current = 'screen_main'
 
+        # self.update_chart()
+
     def on_btn_write_release(self):
         if self.serial_port and self.serial_port.is_open:
             if sys.version_info < (3, 0):
@@ -131,22 +149,18 @@ class DroneDetector(MDApp):
     def update_wifi_channels(self, wifi_lvl):
         self.uiDict['wifi_level'].text = wifi_lvl
 
+
     @mainthread
     def display_received_msg(self, msg):
         self.uiDict['txtInput_read'].text += msg
-        lastline = self.uiDict['txtInput_read'].text.split('\r\n')[-1]
+        lastline = list(reversed(self.uiDict['txtInput_read'].text.split('\r\n')))[0]
         # print(f'line {lastline}')
         wifi_found = re.findall(r'(\{.*\})', lastline)
         batt_level = re.findall(r'(?<=Battery Voltage = )\d\.\d\d', lastline)
         if len(wifi_found) > 0:
             self.update_wifi_channels(wifi_found[-1])
-            # ser_to_json = json.loads(ser_regul[0].lstrip("'").rstrip("'"))
-            # ser_data.update(ser_to_json)
-            print(f'found: {wifi_found[-1]}')
         if len(batt_level) > 0:
             self.update_batt_level(batt_level[-1])
-            # print(f'found {batt_level[0]}')
-            # self.update_batt_level(batt_level[0])
 
 
 if __name__ == '__main__':
