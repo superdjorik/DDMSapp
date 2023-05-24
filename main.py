@@ -155,6 +155,7 @@ class DroneDetector(MDApp):
 
         if len(batt_level) > 0:
             self.update_batt_level(batt_level[-1])
+            self.update_chart()
 
     @mainthread
     def plot_chart(self):
@@ -170,7 +171,7 @@ class DroneDetector(MDApp):
         self.uiDict['chart'].add_widget(self.graph)
 
     def update_chart(self):
-        self.uiDict['chart'].clear_widgets()
+        # self.uiDict['chart'].clear_widgets()
         channel = 7
         chan = wifi_channel_to_freq(channel)
         rssi = -50
@@ -179,9 +180,9 @@ class DroneDetector(MDApp):
         x = np.linspace(left, right, 50)
         y = (-99 - rssi) * np.sin((x - chan + 20) / 40 * np.pi)
         y = -99 - y
-        self.plot.points = (x, y)
+        self.plot.points = [(x, sin(x / 10.)) for x in range(0, 101)]
         self.graph.add_plot(self.plot)
-        self.uiDict['chart'].add_widget(self.graph)
+        # self.uiDict['chart'].update_widget(self.graph)
 
 
 
