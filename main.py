@@ -1,19 +1,14 @@
 import json
+import math
 import re
-
 import numpy as np
 from kivy.logger import LoggerHistory
-from kivy.properties import ObjectProperty
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.widget import Widget
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.button import Button
-from kivy.uix.floatlayout import FloatLayout
 from kivy.clock import mainthread
 from kivy.utils import platform
 import threading
-import sys
 from kivy.garden.graph import Graph, MeshLinePlot
 from math import sin
 
@@ -39,6 +34,7 @@ class DroneDetector(MDApp):
     def build(self):
         self.theme_cls.material_style = "M3"
         self.theme_cls.theme_style = "Dark"
+        self.uiDict['batt_level'].text = '0.0'
         return Builder.load_file('dronedetector.kv')
 
     def on_stop(self):
@@ -58,7 +54,6 @@ class DroneDetector(MDApp):
         else:
             usb_device_list = list_ports.comports()
             self.device_name_list = [port.device for port in usb_device_list]
-
         for device_name in self.device_name_list:
             btnText = device_name
             button = Button(text=btnText, size_hint_y=None, height='100dp')
@@ -67,7 +62,6 @@ class DroneDetector(MDApp):
 
     def on_btn_device_release(self, btn):
         device_name = btn.text
-
         if platform == 'android':
             device = usb.get_usb_device(device_name)
             if not device:
@@ -101,23 +95,18 @@ class DroneDetector(MDApp):
 
         self.uiDict['sm'].current = 'screen_main'
         self.plot_chart()
-        # self.update_chart()
 
     def on_btn_write_release(self):
         if self.serial_port and self.serial_port.is_open:
-            if sys.version_info < (3, 0):
-                data = bytes(self.uiDict['txtInput_write'].text + '\n')
-            else:
-                data = bytes(
-                    (self.uiDict['txtInput_write'].text + '\n'),
-                    'utf8'
-                )
+            data = bytes(
+                (self.uiDict['txtInput_write'].text + '\n'),
+                'utf8'
+            )
             self.serial_port.write(data)
             self.uiDict['txtInput_read'].text += '[Sent]{}\n'.format(
                 self.uiDict['txtInput_write'].text
             )
             self.uiDict['txtInput_write'].text = ''
-
 
     def read_msg_thread(self):
         while True:
@@ -134,28 +123,24 @@ class DroneDetector(MDApp):
 
     @mainthread
     def update_batt_level(self, lvl):
-        self.uiDict['batt_level'].text = lvl
+        self.uiDict['batt_level'].text = 'Уровень заряда: ' + lvl
 
     @mainthread
     def update_wifi_channels(self, wifi_lvl):
         self.uiDict['wifi_level'].text = wifi_lvl
 
-
     @mainthread
     def display_received_msg(self, msg):
         self.uiDict['txtInput_read'].text += msg
-
         lastline = list(reversed(self.uiDict['txtInput_read'].text.split('\r\n')))[0]
-        # print(f'line {lastline}')
-        wifi_found = re.findall(r'(\{.*\})', lastline)
+        # wifi_found = re.findall(r'(\{.*\})', lastline)
+        wifi_found = re.findall(r'(\{\"Channel\".*\})', lastline)
         batt_level = re.findall(r'(?<=Battery Voltage = )\d\.\d\d', lastline)
         if len(wifi_found) > 0:
             founded = json.loads(wifi_found[-1])
+            print(founded)
             self.update_wifi_channels(wifi_found[-1])
-            # print((founded['Channel']))
-            # for x in range(len(founded['Channel'])):
             self.update_chart(founded['Channel'], founded['RSSI'])
-                # print(founded['Channel'], founded['RSSI'])
 
         if len(batt_level) > 0:
             self.update_batt_level(batt_level[-1])
@@ -163,7 +148,6 @@ class DroneDetector(MDApp):
     @mainthread
     def plot_chart(self):
         self.uiDict['chart'].clear_widgets()
-        # self.uiDict['btn_chart'].clear_widgets()
         self.graph = Graph(
             xlabel='Частота', ylabel='Уровень',
             # x_ticks_minor=10,
@@ -174,19 +158,14 @@ class DroneDetector(MDApp):
                       xmin=2400,
                       xmax=2500,
                       ymin=-100,
-                      ymax=0
+                      ymax=-30
         )
-        # self.plot = MeshLinePlot(color=[1, 0, 0, 1])
-        # self.plot.points = [(x, sin(x / 10.)) for x in range(0, 101)]
-        # self.graph.add_plot(self.plot)
         self.uiDict['chart'].add_widget(self.graph)
 
     def update_chart(self, wifi_chan, wifi_rssi):
         # self.uiDict['chart'].clear_widgets()
         for plot in self.graph.plots:
             self.graph.remove_plot(plot)
-
-
         for i in range(len(wifi_chan)):
             self.i = MeshLinePlot(color=[1, 0, 0, 1])
             chan = wifi_channel_to_freq(wifi_chan[i])
@@ -196,8 +175,28 @@ class DroneDetector(MDApp):
             x = np.linspace(left, right, 50)
             self.i.points = [(x, -99 - (-99 - rssi) * np.sin((x - chan + 20) / 40 * np.pi)) for x in range(left, right+1)]
             self.graph.add_plot(self.i)
-        # self.uiDict['chart'].update_widget(self.graph)
 
+    def checkbox_state(self, state):
+        if state == 'normal':
+            result = 0
+        else:
+            result = 1
+        return result
+
+    def save_settings(self):
+        settings_list = {
+            "treshold58": math.ceil(self.uiDict['settings_threshold24_red'].value),
+            "treshold58_redled": math.ceil(self.uiDict['settings_threshold58_red'].value),
+            "treshold24": math.ceil(self.uiDict['settings_threshold24'].value),
+            "treshold24_redled": math.ceil(self.uiDict['settings_threshold24_red'].value),
+            "blindmode": self.checkbox_state(self.uiDict['checkbox_blindmode'].state),
+            "no_sound": self.checkbox_state(self.uiDict['checkbox_soundmode'].state),
+            "save": self.checkbox_state(self.uiDict['checkbox_save_eeprom'].state),
+        }
+        text_to_write = str(json.dumps(settings_list))
+        data = bytes((text_to_write + '\n'), 'utf8')
+        self.serial_port.write(data)
+        self.uiDict['txtInput_read'].text += '[Sent]{}\n'.format(text_to_write)
 
 
 if __name__ == '__main__':

@@ -3,19 +3,23 @@
 BoxLayout:
     id: box_root
     orientation: 'vertical'
-    Label:
+    MDLabel:
         size_hint_y: None
         height: '50dp'
         text: 'Drone Detector'
+        halign: "center"
+        id: batt_level
+        on_parent: app.uiDict['batt_level'] = self
+        md_bg_color: 1, 1, 1, 0.5
     ScreenManager:
         id: sm
         on_parent: app.uiDict['sm'] = self
         Screen:
             name: 'screen_scan'
-            BoxLayout:
+            MDBoxLayout:
                 orientation: 'vertical'
                 ScrollView:
-                    BoxLayout:
+                    MDBoxLayout:
                         id: box_list
                         orientation: 'vertical'
                         on_parent: app.uiDict['box_list'] = self
@@ -38,65 +42,37 @@ BoxLayout:
                     name: 'charts'
                     icon: 'chart-bell-curve'
                     text: 'Визуализация'
-                    ScrollView:
-                        BoxLayout:
+                    MDScrollView:
+                        MDBoxLayout:
                             id: graph
                             on_parent: app.uiDict['chart'] = self
                             size_hint_y: None
 #                            height: max(self.minimum_height, self.parent.height)
                             size: root.width * 1 / 3 , root.height * 2 / 4
 
-
-#                            plot: MeshLinePlot
-#                            ylabel:'Y'
-#                            xlabel:'X'
-#                            x_ticks_minor:5
-#                            x_tics_major:25
-#                            y_ticks_major:1
-#                            y_grid_label:True
-#                            x_grid_label:True
-#                            padding:5
-#                            x_grid:True
-#                            y_grid:True
-#                            xmin:-0
-#                            xmax:100
-#                            ymin:-1
-#                            ymax:1
-
                     GridLayout:
                         cols: 2
 #                        size: root.width * 1 / 3 , root.height * 1 / 4
                         size_hint_y: 0.2
-                        Label:
-                            text: 'Напряжение'
-#                            size_hint_y: None
-                            text_size: self.size
-                            height: '30dp'
-#                            padding_x: '5dp'
-                        Label:
-                            id: batt_level
-                            on_parent: app.uiDict['batt_level'] = self
-                            size_hint_y: None
-                            text_size: self.size
-                            height: '30dp'
-                            padding_x: '5dp'
-                            readonly: True
-                            text: ''
-                        Label:
+                        MDLabel:
                             text: 'WiFi'
 #                            size_hint_y: None
                             text_size: self.size
                             height: '30dp'
-#                            padding_x: '5dp'
-                        Label:
+#                            width: '50dp'
+                            size_hint_x: .1
+                            padding: '5dp'
+                            padding_x: '20dp'
+                        MDLabel:
                             id: wifi_level
                             on_parent: app.uiDict['wifi_level'] = self
                             size_hint_y: None
 #                            text_size: self.size
-                            height: '50dp'
-                            padding_x: '5dp'
+                            height: '30dp'
+#                            padding_x: '10dp'
                             readonly: True
                             text: ''
+#                            width: 0.8
 
                 MDBottomNavigationItem:
                     name: 'console'
@@ -118,7 +94,7 @@ BoxLayout:
                             on_parent: app.uiDict['btn_write'] = self
                             size_hint_y: None
                             height: '50dp'
-                            text: 'Write'
+                            text: 'Отправить'
                             on_release: app.on_btn_write_release()
                         ScrollView:
                             TextInput:
@@ -132,7 +108,61 @@ BoxLayout:
                     name: 'settings'
                     text: 'Настройки'
                     icon: 'cog'
-
-                    MDLabel:
-                        text: 'Пока нечего настраивать'
-                        halign: 'center'
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        GridLayout:
+                            cols: 2
+                            padding: 10
+                            hint: 'center'
+                            MDLabel:
+                                text: 'Светодиоды'
+                            CheckBox:
+                                id: checkbox_blindmode
+                                on_parent: app.uiDict['checkbox_blindmode'] = self
+                            MDLabel:
+                                text: 'Звук'
+                            CheckBox:
+                                id: checkbox_soundmode
+                                on_parent: app.uiDict['checkbox_soundmode'] = self
+                            MDLabel:
+                                text: 'Уровень 5.8'
+                            MDSlider:
+                                id: slider_threshold58
+                                on_parent: app.uiDict['settings_threshold58'] = self
+                                min: 0
+                                max: 1000
+                                value: 100
+                            MDLabel:
+                                text: 'Уровень 5.8 Красный'
+                            MDSlider:
+                                id: slider_threshold58_red
+                                on_parent: app.uiDict['settings_threshold58_red'] = self
+                                min: 0
+                                max: 1000
+                                value: 500
+                            MDLabel:
+                                text: 'Уровень 2.4'
+                            MDSlider:
+                                id: slider_threshold24
+                                on_parent: app.uiDict['settings_threshold24'] = self
+                                min: 0
+                                max: 1000
+                                value: 100
+                            MDLabel:
+                                text: 'Уровень 2.4 Красный'
+                            MDSlider:
+                                id: slider_threshold24_red
+                                on_parent: app.uiDict['settings_threshold24_red'] = self
+                                min: 0
+                                max: 1000
+                                value: 500
+                            MDLabel:
+                                text: 'Сохранить EEPROM'
+                            CheckBox:
+                                id: checkbox_blindmode
+                                on_parent: app.uiDict['checkbox_save_eeprom'] = self
+                        Button:
+                            text: 'Сохранить'
+                            size_hint_y: 0.2
+                            on_parent: app.uiDict['save_settings'] = self
+                            on_release: app.save_settings()
