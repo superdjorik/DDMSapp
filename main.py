@@ -12,7 +12,7 @@ import threading
 from kivy.garden.graph import Graph, MeshLinePlot
 from math import sin
 
-from app_controller.wifi_defs import wifi_channel_to_freq
+from app_controller.wifi_defs import wifi_channel_to_freq, remove_wifi_duplicates
 
 if platform == 'android':
     from usb4a import usb
@@ -140,7 +140,9 @@ class DroneDetector(MDApp):
             founded = json.loads(wifi_found[-1])
             print(founded)
             self.update_wifi_channels(wifi_found[-1])
-            self.update_chart(founded['Channel'], founded['RSSI'])
+            founded1 = remove_wifi_duplicates(founded['Channel'], founded['RSSI'])
+            print(founded1)
+            self.update_chart(founded1['Channel'], founded1['RSSI'])
 
         if len(batt_level) > 0:
             self.update_batt_level(batt_level[-1])

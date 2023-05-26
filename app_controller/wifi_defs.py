@@ -21,14 +21,13 @@ ser_data_test = {'Channel': [7, 11],
 def wifi_channel_to_freq(wifi_channel):
     return WIFI_CHANNELS.get(wifi_channel)
 
-# def print_wifi(wifi_freq, rssi_power):
-#     class Linechart(MDScreen):
-#         def update(self):
-#             chart1 = self.ids.chart1
-#             chart1.x_values = wifi_freq
-#             chart1.y_values = rssi_power
-#             chart1.update()
-
-
+def remove_wifi_duplicates(wifi_channel: list, wifi_rssi:list):
+    res = {'Channel': [], 'RSSI': []}
+    for x in range(len(wifi_channel)):
+        # print(x)
+        if wifi_channel[x] not in res['Channel']:
+            res['Channel'].append(wifi_channel[x])
+            res['RSSI'].append(wifi_rssi[x])
+    return res
 
 
