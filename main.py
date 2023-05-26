@@ -176,21 +176,26 @@ class DroneDetector(MDApp):
                       ymin=-100,
                       ymax=0
         )
-        self.plot = MeshLinePlot(color=[1, 0, 0, 1])
+        # self.plot = MeshLinePlot(color=[1, 0, 0, 1])
         # self.plot.points = [(x, sin(x / 10.)) for x in range(0, 101)]
         # self.graph.add_plot(self.plot)
         self.uiDict['chart'].add_widget(self.graph)
 
     def update_chart(self, wifi_chan, wifi_rssi):
         # self.uiDict['chart'].clear_widgets()
+        for plot in self.graph.plots:
+            self.graph.remove_plot(plot)
+
+
         for i in range(len(wifi_chan)):
+            self.i = MeshLinePlot(color=[1, 0, 0, 1])
             chan = wifi_channel_to_freq(wifi_chan[i])
             rssi = wifi_rssi[i]
             left = chan - 20
             right = chan + 20
             x = np.linspace(left, right, 50)
-            self.plot.points = [(x, -99 - (-99 - rssi) * np.sin((x - chan + 20) / 40 * np.pi)) for x in range(left, right+1)]
-        self.graph.add_plot(self.plot)
+            self.i.points = [(x, -99 - (-99 - rssi) * np.sin((x - chan + 20) / 40 * np.pi)) for x in range(left, right+1)]
+            self.graph.add_plot(self.i)
         # self.uiDict['chart'].update_widget(self.graph)
 
 
