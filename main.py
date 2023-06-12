@@ -9,7 +9,6 @@ from kivy.uix.button import Button
 from kivy.clock import mainthread
 from kivy.utils import platform
 import threading
-from kivy.garden.graph import Graph, MeshLinePlot
 from math import sin
 
 from app_controller.wifi_defs import wifi_channel_to_freq, remove_wifi_duplicates
@@ -94,7 +93,7 @@ class DroneDetector(MDApp):
             self.read_thread.start()
 
         self.uiDict['sm'].current = 'screen_main'
-        self.plot_chart()
+        # self.plot_chart()
 
     def on_btn_write_release(self):
         if self.serial_port and self.serial_port.is_open:
@@ -137,46 +136,10 @@ class DroneDetector(MDApp):
         wifi_found = re.findall(r'(\{\"Channel\".*\})', lastline)
         batt_level = re.findall(r'(?<=Battery Voltage = )\d\.\d\d', lastline)
         if len(wifi_found) > 0:
-            founded = json.loads(wifi_found[-1])
-            # print(founded)
             self.update_wifi_channels(wifi_found[-1])
-            founded1 = remove_wifi_duplicates(founded['Channel'], founded['RSSI'])
-            # print(founded1)
-            self.update_chart(founded1['Channel'], founded1['RSSI'])
 
         if len(batt_level) > 0:
             self.update_batt_level(batt_level[-1])
-
-    @mainthread
-    def plot_chart(self):
-        self.uiDict['chart'].clear_widgets()
-        self.graph = Graph(
-            xlabel='Частота', ylabel='Уровень',
-            # x_ticks_minor=10,
-                      x_ticks_major=10, y_ticks_major=10,
-                      y_grid_label=True, x_grid_label=True, padding=5,
-                      x_grid=True,
-                      y_grid=True,
-                      xmin=2400,
-                      xmax=2500,
-                      ymin=-100,
-                      ymax=-30
-        )
-        self.uiDict['chart'].add_widget(self.graph)
-
-    def update_chart(self, wifi_chan, wifi_rssi):
-        # self.uiDict['chart'].clear_widgets()
-        for plot in self.graph.plots:
-            self.graph.remove_plot(plot)
-        for i in range(len(wifi_chan)):
-            self.i = MeshLinePlot(color=[1, 0, 0, 1])
-            chan = wifi_channel_to_freq(wifi_chan[i])
-            rssi = wifi_rssi[i]
-            left = chan - 20
-            right = chan + 20
-            x = np.linspace(left, right, 50)
-            self.i.points = [(x, -99 - (-99 - rssi) * np.sin((x - chan + 20) / 40 * np.pi)) for x in range(left, right+1)]
-            self.graph.add_plot(self.i)
 
     def checkbox_state(self, state):
         if state == 'normal':
