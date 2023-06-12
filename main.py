@@ -138,10 +138,10 @@ class DroneDetector(MDApp):
         batt_level = re.findall(r'(?<=Battery Voltage = )\d\.\d\d', lastline)
         if len(wifi_found) > 0:
             founded = json.loads(wifi_found[-1])
-            print(founded)
+            # print(founded)
             self.update_wifi_channels(wifi_found[-1])
             founded1 = remove_wifi_duplicates(founded['Channel'], founded['RSSI'])
-            print(founded1)
+            # print(founded1)
             self.update_chart(founded1['Channel'], founded1['RSSI'])
 
         if len(batt_level) > 0:
