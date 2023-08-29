@@ -1,4 +1,3 @@
-#:import MeshLinePlot kivy.garden.graph.MeshLinePlot
 <DroneDetector>
 BoxLayout:
     id: box_root
@@ -57,19 +56,19 @@ BoxLayout:
                         MDLabel:
                             text: 'WiFi'
 #                            size_hint_y: None
-                            text_size: self.size
+                            text_size: '1dp'
                             height: '30dp'
-#                            width: '50dp'
+                            width: '50dp'
                             size_hint_x: .1
-                            padding: '5dp'
-                            padding_x: '20dp'
+#                            padding: '5dp'
+#                            padding_x: '20dp'
                         MDLabel:
                             id: wifi_level
                             on_parent: app.uiDict['wifi_level'] = self
                             size_hint_y: None
 #                            text_size: self.size
                             height: '30dp'
-#                            padding_x: '10dp'
+                            padding_x: '10dp'
                             readonly: True
                             text: ''
 #                            width: 0.8
