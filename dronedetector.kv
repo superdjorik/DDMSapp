@@ -37,41 +37,41 @@ BoxLayout:
                 selected_color_background: "orange"
                 text_color_active: "lightgrey"
 
-                MDBottomNavigationItem:
-                    name: 'charts'
-                    icon: 'chart-bell-curve'
-                    text: 'Визуализация'
-#                    MDScrollView:
-#                        MDBoxLayout:
-#                            id: graph
-#                            on_parent: app.uiDict['chart'] = self
+#                MDBottomNavigationItem:
+#                    name: 'charts'
+#                    icon: 'chart-bell-curve'
+#                    text: 'Визуализация'
+##                    MDScrollView:
+##                        MDBoxLayout:
+##                            id: graph
+##                            on_parent: app.uiDict['chart'] = self
+##                            size_hint_y: None
+###                            height: max(self.minimum_height, self.parent.height)
+##                            size: root.width * 1 / 3 , root.height * 2 / 4
+##
+#                    GridLayout:
+#                        cols: 2
+##                        size: root.width * 1 / 3 , root.height * 1 / 4
+#                        size_hint_y: 0.2
+#                        MDLabel:
+#                            text: 'WiFi'
+##                            size_hint_y: None
+#                            text_size: '1dp'
+#                            height: '30dp'
+#                            width: '50dp'
+#                            size_hint_x: .1
+##                            padding: '5dp'
+##                            padding_x: '20dp'
+#                        MDLabel:
+#                            id: wifi_level
+#                            on_parent: app.uiDict['wifi_level'] = self
 #                            size_hint_y: None
-##                            height: max(self.minimum_height, self.parent.height)
-#                            size: root.width * 1 / 3 , root.height * 2 / 4
-#
-                    GridLayout:
-                        cols: 2
-#                        size: root.width * 1 / 3 , root.height * 1 / 4
-                        size_hint_y: 0.2
-                        MDLabel:
-                            text: 'WiFi'
-#                            size_hint_y: None
-                            text_size: '1dp'
-                            height: '30dp'
-                            width: '50dp'
-                            size_hint_x: .1
-#                            padding: '5dp'
-#                            padding_x: '20dp'
-                        MDLabel:
-                            id: wifi_level
-                            on_parent: app.uiDict['wifi_level'] = self
-                            size_hint_y: None
-#                            text_size: self.size
-                            height: '30dp'
-                            padding_x: '10dp'
-                            readonly: True
-                            text: ''
-#                            width: 0.8
+##                            text_size: self.size
+#                            height: '30dp'
+#                            padding_x: '10dp'
+#                            readonly: True
+#                            text: ''
+##                            width: 0.8
 
                 MDBottomNavigationItem:
                     name: 'console'
@@ -107,7 +107,7 @@ BoxLayout:
                     name: 'settings'
                     text: 'Настройки'
                     icon: 'cog'
-                    MDBoxLayout:
+                    BoxLayout:
                         orientation: 'vertical'
                         GridLayout:
                             cols: 2

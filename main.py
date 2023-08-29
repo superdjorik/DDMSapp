@@ -124,19 +124,19 @@ class DroneDetector(MDApp):
     def update_batt_level(self, lvl):
         self.uiDict['batt_level'].text = 'Уровень заряда: ' + lvl
 
-    @mainthread
-    def update_wifi_channels(self, wifi_lvl):
-        self.uiDict['wifi_level'].text = wifi_lvl
+    # @mainthread
+    # def update_wifi_channels(self, wifi_lvl):
+    #     self.uiDict['wifi_level'].text = wifi_lvl
 
     @mainthread
     def display_received_msg(self, msg):
         self.uiDict['txtInput_read'].text += msg
         lastline = list(reversed(self.uiDict['txtInput_read'].text.split('\r\n')))[0]
         # wifi_found = re.findall(r'(\{.*\})', lastline)
-        wifi_found = re.findall(r'(\{\"Channel\".*\})', lastline)
+        # wifi_found = re.findall(r'(\{\"Channel\".*\})', lastline)
         batt_level = re.findall(r'(?<=Battery Voltage = )\d\.\d\d', lastline)
-        if len(wifi_found) > 0:
-            self.update_wifi_channels(wifi_found[-1])
+        # if len(wifi_found) > 0:
+        #     self.update_wifi_channels(wifi_found[-1])
 
         if len(batt_level) > 0:
             self.update_batt_level(batt_level[-1])
