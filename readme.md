@@ -13,16 +13,10 @@ kv syntax highliting in pycharm for Windows (File - Manage IDE - Import):
 
 https://github.com/noembryo/KV4Jetbrains
 
-[//]: # (Android manifest at dir:)
+#adb:
+adb tcpip 555
+adb connect 192.168.1.19:5555
+adb logcat > log.txt
 
-[//]: # (\\wsl.localhost\Ubuntu-20.04\home\user\DDMSapp\.buildozer\android\platform\build-arm64-v8a\dists\dronedetector\templates)
-
-[//]: # (add )
-
-[//]: # ()
-[//]: # (```)
-
-[//]: # (<uses-feature android:name="android.hardware.usb.host" />)
-
-[//]: # (```)
-
+#clean buildozer
+rm -rf .buildozer ~/.buildozer
