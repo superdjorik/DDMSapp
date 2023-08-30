@@ -14,9 +14,18 @@ kv syntax highliting in pycharm for Windows (File - Manage IDE - Import):
 https://github.com/noembryo/KV4Jetbrains
 
 #adb:
+
 adb tcpip 555
+
+adb shell ifconfig # watch ip address
+
 adb connect 192.168.1.19:5555
+
 adb logcat > log.txt
 
+adb disconnect
+
+
 #clean buildozer
+
 rm -rf .buildozer ~/.buildozer
