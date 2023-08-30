@@ -150,7 +150,7 @@ class DroneDetector(MDApp):
 
     def save_settings(self):
         settings_list = {
-            "treshold58": math.ceil(self.uiDict['settings_threshold24_red'].value),
+            "treshold58": math.ceil(self.uiDict['settings_threshold58'].value),
             "treshold58_redled": math.ceil(self.uiDict['settings_threshold58_red'].value),
             "treshold24": math.ceil(self.uiDict['settings_threshold24'].value),
             "treshold24_redled": math.ceil(self.uiDict['settings_threshold24_red'].value),

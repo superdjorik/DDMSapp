@@ -118,47 +118,47 @@ BoxLayout:
                             CheckBox:
                                 id: checkbox_blindmode
                                 on_parent: app.uiDict['checkbox_blindmode'] = self
-                            MDLabel:
+                            Label:
                                 text: 'Звук'
                             CheckBox:
                                 id: checkbox_soundmode
                                 on_parent: app.uiDict['checkbox_soundmode'] = self
-                            MDLabel:
+                            Label:
                                 text: 'Уровень 5.8'
-                            MDSlider:
+                            Slider:
                                 id: slider_threshold58
                                 on_parent: app.uiDict['settings_threshold58'] = self
                                 min: 0
                                 max: 1000
                                 value: 100
-                            MDLabel:
+                            Label:
                                 text: 'Уровень 5.8 Красный'
-                            MDSlider:
+                            Slider:
                                 id: slider_threshold58_red
                                 on_parent: app.uiDict['settings_threshold58_red'] = self
                                 min: 0
                                 max: 1000
                                 value: 500
-                            MDLabel:
+                            Label:
                                 text: 'Уровень 2.4'
-                            MDSlider:
+                            Slider:
                                 id: slider_threshold24
                                 on_parent: app.uiDict['settings_threshold24'] = self
                                 min: 0
                                 max: 1000
                                 value: 100
-                            MDLabel:
+                            Label:
                                 text: 'Уровень 2.4 Красный'
-                            MDSlider:
+                            Slider:
                                 id: slider_threshold24_red
                                 on_parent: app.uiDict['settings_threshold24_red'] = self
                                 min: 0
                                 max: 1000
                                 value: 500
-                            MDLabel:
+                            Label:
                                 text: 'Сохранить EEPROM'
                             CheckBox:
-                                id: checkbox_blindmode
+                                id: checkbox_save_eeprom
                                 on_parent: app.uiDict['checkbox_save_eeprom'] = self
                         Button:
                             text: 'Сохранить'
